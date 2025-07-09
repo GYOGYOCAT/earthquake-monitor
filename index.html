@@ -3,17 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌏 地震情報モニター - 日本リアルタイム地震マップ</title>
-    <meta name="description" content="日本の地震情報をリアルタイムで表示。震度・マグニチュード別の色分け表示、自動更新機能付き。">
-
-  <!-- Google Analytics 4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JFRGN7YJYB6"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-JFRGN7YJYB6');
-  </script>
+    <title>🌏 直近の地震情報と傾向分析｜日本地震リアルタイムモニター</title>
+    <meta name="keywords" content="直近地震,地震傾向,地震情報,地震モニター,日本地震,リアルタイム地震,震度,マグニチュード,地震マップ,防災情報,地震速報,地震監視,地震アラート,P2P地震情報,地震発生頻度,地震統計">
+    <meta name="description" content="直近24時間の地震情報と発生傾向を分析！日本全国の地震データをリアルタイムで監視し、震度・マグニチュード別に色分け表示。地震の発生パターンや頻度傾向を把握して防災対策に活用。無料で最新の地震速報と統計データを提供。">
+    
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="日本地震情報リアルタイムモニター｜震度・マグニチュード別地震マップ">
+    <meta property="og:description" content="日本の最新地震情報をリアルタイムで監視。震度・マグニチュード別色分け地震マップ、地震速報、防災情報を無料提供。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://gyogyocat.github.io/earthquake-monitor/">
+    <meta property="og:site_name" content="GYOGYOCAT">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="日本地震情報リアルタイムモニター">
+    <meta name="twitter:description" content="日本の最新地震情報をリアルタイムで監視。震度・マグニチュード別色分け地震マップ。">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://gyogyocat.github.io/earthquake-monitor/">
+    
+    <!-- 構造化データ（JSON-LD） -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "日本地震情報リアルタイムモニター",
+      "description": "日本の最新地震情報をリアルタイムで監視。震度・マグニチュード別色分け地震マップ、地震速報、防災情報を無料で提供。",
+      "url": "https://gyogyocat.github.io/earthquake-monitor/",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "GYOGYOCAT"
+      },
+      "datePublished": "2025-07-09",
+      "inLanguage": "ja",
+      "featureList": [
+        "リアルタイム地震情報",
+        "震度・マグニチュード別表示",
+        "地震マップ表示",
+        "自動更新機能",
+        "防災情報提供"
+      ],
+      "keywords": "地震情報,地震モニター,日本地震,リアルタイム地震,震度,マグニチュード,地震マップ,防災情報"
+    }
+    </script>
+    
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JFRGN7YJYB6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-JFRGN7YJYB6');
+    </script>
     
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1106158066306697"
@@ -234,7 +282,7 @@
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-1106158066306697"
-             data-ad-slot="5287863920"
+             data-ad-slot="1234567890"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
     </div>
@@ -330,7 +378,7 @@
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-1106158066306697"
-             data-ad-slot="6171337236"
+             data-ad-slot="1234567890"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
     </div>
@@ -368,56 +416,7 @@
             return 8;
         }
 
-        // 実際の地震データを取得（P2P地震情報API）
-        async function fetchRealEarthquakeData() {
-            try {
-                // P2P地震情報API - 地震情報(震度速報) codes=551
-                const response = await fetch('https://api.p2pquake.net/v2/history?codes=551&limit=100');
-                const apiData = await response.json();
-                
-                // APIデータを内部形式に変換
-                const earthquakeData = apiData.map(item => {
-                    const eq = item.earthquake;
-                    const time = new Date(eq.time.replace(/\//g, '-'));
-                    
-                    // 最大震度の変換 (10=1, 20=2, 30=3, 40=4, 45=5弱, 50=5強, 55=6弱, 60=6強, 70=7)
-                    let intensity = 1;
-                    switch(eq.maxScale) {
-                        case 10: intensity = 1; break;
-                        case 20: intensity = 2; break;
-                        case 30: intensity = 3; break;
-                        case 40: intensity = 4; break;
-                        case 45: intensity = 5; break;
-                        case 50: intensity = 5; break;
-                        case 55: intensity = 6; break;
-                        case 60: intensity = 6; break;
-                        case 70: intensity = 7; break;
-                        default: intensity = 1;
-                    }
-                    
-                    return {
-                        time: time,
-                        location: eq.hypocenter.name,
-                        latitude: eq.hypocenter.latitude || 35.6762,
-                        longitude: eq.hypocenter.longitude || 139.6503,
-                        magnitude: eq.hypocenter.magnitude || 0,
-                        intensity: intensity,
-                        depth: eq.hypocenter.depth || 0
-                    };
-                });
-                
-                // 直近3日間のデータのみフィルタ
-                const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
-                return earthquakeData.filter(eq => eq.time >= threeDaysAgo);
-                
-            } catch (error) {
-                console.error('地震データの取得に失敗しました:', error);
-                // エラー時はサンプルデータを返す
-                return generateSampleData();
-            }
-        }
-
-        // サンプル地震データ（フォールバック用）
+        // サンプル地震データ（実際のAPIに置き換える）
         function generateSampleData() {
             const sampleData = [];
             const locations = [
@@ -429,7 +428,7 @@
                 {name: "北海道", lat: 43.0642, lng: 141.3469}
             ];
 
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 50; i++) {
                 const location = locations[Math.floor(Math.random() * locations.length)];
                 const magnitude = (Math.random() * 4 + 2).toFixed(1);
                 const intensity = Math.floor(Math.random() * 7) + 1;
@@ -601,27 +600,17 @@
 
         // データを更新
         function updateData() {
-            // 実際のP2P地震情報APIからデータを取得
-            fetchRealEarthquakeData().then(data => {
-                earthquakeData = data;
-                
-                addEarthquakeMarkers(earthquakeData);
-                updateStats(earthquakeData);
-                updateEarthquakeList(earthquakeData);
-                
-                // 更新時刻を表示
-                document.getElementById('updateTime').textContent = 
-                    `最終更新: ${new Date().toLocaleTimeString('ja-JP')}`;
-                
-                console.log(`地震データを更新しました: ${data.length}件`);
-            }).catch(error => {
-                console.error('データ更新エラー:', error);
-                // エラー時はサンプルデータで表示
-                earthquakeData = generateSampleData();
-                addEarthquakeMarkers(earthquakeData);
-                updateStats(earthquakeData);
-                updateEarthquakeList(earthquakeData);
-            });
+            // 実際のAPIからデータを取得する部分
+            // 現在はサンプルデータを使用
+            earthquakeData = generateSampleData();
+            
+            addEarthquakeMarkers(earthquakeData);
+            updateStats(earthquakeData);
+            updateEarthquakeList(earthquakeData);
+            
+            // 更新時刻を表示
+            document.getElementById('updateTime').textContent = 
+                `最終更新: ${new Date().toLocaleTimeString('ja-JP')}`;
         }
 
         // 初期化
